@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGOE Ulita — Den otevřených dveří pro B2B</title>
+    <meta name="description" content="Exkluzivní prohlídka Ulita Plochá 2.0 pro developery, realitní kanceláře a investory. 22. dubna 2026, Praha 4 Libuš.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --yellow: #DDDD00;
+            --yellow-hover: #C8C800;
+            --black: #1A1A1A;
+            --dark: #2A2A2A;
+            --gray-900: #333333;
+            --gray-700: #555555;
+            --gray-500: #888888;
+            --gray-300: #CCCCCC;
+            --gray-100: #F5F5F5;
+            --white: #FFFFFF;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 4px 24px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 48px rgba(0,0,0,0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--black);
+            background: var(--white);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ─── NAV ─── */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+        }
+        .nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            display: flex; align-items: center; justify-content: space-between; height: 72px;
+        }
+        .nav-logo-img { height: 32px; width: auto; }
+        .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+        .nav-links a { text-decoration: none; color: var(--gray-700); font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--black); }
+        .nav-cta { background: var(--black) !important; color: var(--white) !important; padding: 10px 24px !important; border-radius: 100px !important; font-weight: 600 !important; transition: all 0.2s !important; }
+        .nav-cta:hover { background: var(--dark) !important; transform: translateY(-1px); }
+        .nav-mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+        .nav-mobile-toggle span { display: block; width: 24px; height: 2px; background: var(--black); margin: 5px 0; transition: all 0.3s; }
+
+        /* ─── HERO ─── */
+        .hero {
+            padding: 140px 24px 80px;
+            background: linear-gradient(180deg, var(--gray-100) 0%, var(--white) 100%);
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -200px; right: -200px; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(221,221,0,0.08) 0%, transparent 70%); pointer-events: none;
+        }
+        .hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px; background: var(--yellow); color: var(--black);
+            padding: 6px 16px; border-radius: 100px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 24px;
+        }
+        .hero-badge::before { content: ''; width: 8px; height: 8px; background: var(--black); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .hero h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.08; letter-spacing: -0.03em; margin-bottom: 20px; }
+        .hero h1 em { font-style: normal; color: var(--gray-500); }
+        .hero-sub { font-size: 1.15rem; color: var(--gray-700); line-height: 1.7; margin-bottom: 36px; max-width: 500px; }
+        .hero-meta { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+        .hero-meta-item { display: flex; align-items: center; gap: 12px; font-size: 0.95rem; color: var(--gray-700); }
+        .hero-meta-icon { width: 40px; height: 40px; background: var(--white); border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+        .hero-meta-item strong { color: var(--black); font-weight: 600; }
+        .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 16px 32px; border-radius: 100px; font-size: 0.95rem; font-weight: 600; text-decoration: none; cursor: pointer; border: none; transition: all 0.25s ease; font-family: inherit; }
+        .btn-primary { background: var(--black); color: var(--white); }
+        .btn-primary:hover { background: var(--dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .btn-secondary { background: var(--white); color: var(--black); border: 1.5px solid rgba(0,0,0,0.15); }
+        .btn-secondary:hover { border-color: var(--black); transform: translateY(-2px); }
+        .hero-visual { position: relative; }
+        .hero-image-wrapper { position: relative; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-lg); aspect-ratio: 4/3; background: var(--gray-100); }
+        .hero-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-image-tag { position: absolute; bottom: 16px; left: 16px; background: rgba(0,0,0,0.75); backdrop-filter: blur(10px); color: var(--white); padding: 8px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 500; }
+
+        /* ─── GALLERY ─── */
+        .gallery-strip {
+            padding: 0 24px 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        .gallery-grid img {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            border-radius: var(--radius-sm);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .gallery-grid img:hover {
+            transform: scale(1.03);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* ─── SECTION COMMON ─── */
+        .section { padding: 100px 24px; }
+        .section-inner { max-width: 1200px; margin: 0 auto; }
+        .section-label { display: inline-block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--gray-500); margin-bottom: 12px; }
+        .section-title { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 16px; }
+        .section-desc { font-size: 1.05rem; color: var(--gray-700); max-width: 600px; line-height: 1.7; margin-bottom: 48px; }
+
+        /* ─── WHY B2B ─── */
+        .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .why-card { background: var(--gray-100); border-radius: var(--radius); padding: 36px 28px; transition: all 0.3s ease; border: 1px solid transparent; }
+        .why-card:hover { background: var(--white); border-color: rgba(0,0,0,0.08); box-shadow: var(--shadow); transform: translateY(-4px); }
+        .why-card-icon { width: 48px; height: 48px; background: var(--yellow); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 20px; }
+        .why-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.01em; }
+        .why-card p { font-size: 0.9rem; color: var(--gray-700); line-height: 1.6; }
+
+        /* ─── SPECS ─── */
+        .specs-bg { background: var(--black); color: var(--white); }
+        .specs-bg .section-label { color: var(--yellow); }
+        .specs-bg .section-title { color: var(--white); }
+        .specs-bg .section-desc { color: rgba(255,255,255,0.6); }
+        .specs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+        .spec-item { padding: 28px 24px; border-radius: var(--radius); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); }
+        .spec-value { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; color: var(--yellow); margin-bottom: 4px; }
+        .spec-unit { font-size: 1rem; font-weight: 400; color: var(--yellow); opacity: 0.7; }
+        .spec-label { font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+        /* ─── LEVA SECTION ─── */
+        .leva-bg { background: var(--gray-100); }
+        .leva-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+        .leva-images { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .leva-images img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: var(--radius-sm); }
+        .leva-features { list-style: none; margin-top: 24px; }
+        .leva-features li {
+            padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.06);
+            display: flex; align-items: center; gap: 12px; font-size: 0.95rem;
+        }
+        .leva-features li::before {
+            content: '\2713'; width: 28px; height: 28px; background: var(--yellow); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+        }
+
+        /* ─── BENEFITS ─── */
+        .benefits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .benefit-item { display: flex; gap: 16px; padding: 24px; border-radius: var(--radius-sm); border: 1px solid rgba(0,0,0,0.06); transition: all 0.2s; }
+        .benefit-item:hover { border-color: var(--yellow); background: rgba(221,221,0,0.03); }
+        .benefit-num { width: 32px; height: 32px; background: var(--black); color: var(--white); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; }
+        .benefit-text h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+        .benefit-text p { font-size: 0.85rem; color: var(--gray-700); line-height: 1.5; }
+
+        /* ─── RESERVATION ─── */
+        .reservation-bg { background: var(--white); }
+        .reservation-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+        .date-header {
+            background: var(--black); color: var(--white); padding: 20px 24px; border-radius: var(--radius);
+            margin-bottom: 24px; text-align: center;
+        }
+        .date-header h3 { font-size: 1.2rem; font-weight: 700; }
+        .date-header p { font-size: 0.85rem; opacity: 0.6; margin-top: 4px; }
+        .slots-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .slot { padding: 16px 20px; border: 2px solid rgba(0,0,0,0.08); border-radius: var(--radius-sm); background: var(--gray-100); cursor: pointer; transition: all 0.2s; text-align: center; }
+        .slot:hover:not(.slot-taken) { border-color: var(--yellow); background: rgba(221,221,0,0.05); }
+        .slot.selected { border-color: var(--yellow); background: var(--yellow); color: var(--black); }
+        .slot-taken { opacity: 0.4; cursor: not-allowed; text-decoration: line-through; }
+        .slot-time { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; }
+        .slot-status { font-size: 0.75rem; color: var(--gray-500); margin-top: 2px; }
+        .selected .slot-status { color: var(--black); opacity: 0.7; }
+
+        /* ─── FORM ─── */
+        .form-card { background: var(--gray-100); border-radius: var(--radius); padding: 36px; box-shadow: var(--shadow); }
+        .form-card h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; }
+        .form-card .form-sub { font-size: 0.9rem; color: var(--gray-500); margin-bottom: 28px; }
+        .form-group { margin-bottom: 16px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 6px; color: var(--gray-700); }
+        .form-input { width: 100%; padding: 12px 16px; border: 1.5px solid rgba(0,0,0,0.1); border-radius: var(--radius-sm); font-family: inherit; font-size: 0.9rem; transition: border-color 0.2s; background: var(--white); }
+        .form-input:focus { outline: none; border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(221,221,0,0.15); }
+        .form-input::placeholder { color: var(--gray-300); }
+        textarea.form-input { resize: vertical; min-height: 80px; }
+        .form-selected-slot { background: var(--white); border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 20px; font-size: 0.9rem; display: none; align-items: center; gap: 8px; }
+        .form-selected-slot.visible { display: flex; }
+        .form-selected-slot strong { color: var(--black); }
+        .btn-submit { width: 100%; padding: 16px; background: var(--black); color: var(--white); border: none; border-radius: 100px; font-family: inherit; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.25s; }
+        .btn-submit:hover { background: var(--dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+        .form-note { font-size: 0.75rem; color: var(--gray-500); margin-top: 12px; text-align: center; }
+
+        /* ─── SUCCESS ─── */
+        .success-message { display: none; text-align: center; padding: 40px 20px; }
+        .success-message.visible { display: block; }
+        .success-icon { width: 64px; height: 64px; background: var(--yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 20px; }
+        .success-message h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+        .success-message p { color: var(--gray-700); font-size: 0.95rem; }
+
+        /* ─── CONTACT ─── */
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+        .contact-card { padding: 32px 28px; border-radius: var(--radius); border: 1px solid rgba(0,0,0,0.06); text-align: center; }
+        .contact-card-icon { width: 48px; height: 48px; background: var(--gray-100); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin: 0 auto 16px; }
+        .contact-card h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+        .contact-card p { font-size: 0.85rem; color: var(--gray-700); line-height: 1.6; }
+        .contact-card a { color: var(--black); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--yellow); }
+
+        /* ─── MAP ─── */
+        .map-wrapper { margin-top: 48px; border-radius: var(--radius); overflow: hidden; height: 300px; border: 1px solid rgba(0,0,0,0.06); }
+        .map-wrapper iframe { width: 100%; height: 100%; border: none; }
+
+        /* ─── FOOTER ─── */
+        .footer { background: var(--black); color: rgba(255,255,255,0.5); padding: 48px 24px; }
+        .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .footer-logo-img { height: 24px; width: auto; }
+        .footer-links { display: flex; gap: 24px; list-style: none; }
+        .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--white); }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 1024px) {
+            .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+            .hero h1 { font-size: 2.8rem; }
+            .specs-grid { grid-template-columns: repeat(2, 1fr); }
+            .reservation-layout { grid-template-columns: 1fr; }
+            .leva-layout { grid-template-columns: 1fr; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 72px; left: 0; right: 0; background: var(--white); padding: 24px; border-bottom: 1px solid rgba(0,0,0,0.06); box-shadow: var(--shadow); }
+            .nav-mobile-toggle { display: block; }
+            .hero { padding: 120px 24px 60px; }
+            .hero h1 { font-size: 2.2rem; }
+            .section-title { font-size: 2rem; }
+            .why-grid { grid-template-columns: 1fr; }
+            .specs-grid { grid-template-columns: 1fr 1fr; }
+            .benefits-grid { grid-template-columns: 1fr; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+            .hero-buttons { flex-direction: column; }
+            .btn { justify-content: center; }
+            .gallery-grid { grid-template-columns: 1fr 1fr; }
+            .leva-images { grid-template-columns: 1fr; }
+        }
+
+        /* ─── ANIMATIONS ─── */
+        .fade-in { opacity: 0; transform: translateY(24px); transition: all 0.6s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        /* ─── LIGHTBOX ─── */
+        .lightbox { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; cursor: zoom-out; }
+        .lightbox.open { display: flex; }
+        .lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 8px; }
+        .lightbox-close { position: absolute; top: 24px; right: 24px; color: white; font-size: 2rem; cursor: pointer; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); border-radius: 50%; border: none; }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#"><img src="img/logo-black.svg" alt="EGOE Ulita" class="nav-logo-img"></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#proc">Pro koho</a></li>
+                <li><a href="#parametry">Parametry</a></li>
+                <li><a href="#leva">EGOE Leva</a></li>
+                <li><a href="#vyhody">Proč EGOE</a></li>
+                <li><a href="#kontakt">Kontakt</a></li>
+                <li><a href="#rezervace" class="nav-cta">Rezervovat termín</a></li>
+            </ul>
+            <button class="nav-mobile-toggle" id="navToggle" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero" id="hero">
+        <div class="hero-inner">
+            <div>
+                <div class="hero-badge">B2B Den otevřených dveří</div>
+                <h1>Ulita Plochá 2.0<br><em>pro&nbsp;profesionály</em></h1>
+                <p class="hero-sub">
+                    Exkluzivní prohlídka třetí generace kompaktního bydlení EGOE Ulita.
+                    Pro developery, realitní kanceláře a&nbsp;investory.
+                </p>
+
+                <div class="hero-meta">
+                    <div class="hero-meta-item">
+                        <div class="hero-meta-icon">&#128197;</div>
+                        <div><strong>Středa 22. dubna 2026</strong> &mdash; 9:00 – 18:00</div>
+                    </div>
+                    <div class="hero-meta-item">
+                        <div class="hero-meta-icon">&#128205;</div>
+                        <div><strong>K lukám 19</strong>, Praha 4 – Libuš</div>
+                    </div>
+                    <div class="hero-meta-item">
+                        <div class="hero-meta-icon">&#128100;</div>
+                        <div><strong>Petr Hübner</strong>, Sales Manager projektu Ulita</div>
+                    </div>
+                </div>
+
+                <div class="hero-buttons">
+                    <a href="#rezervace" class="btn btn-primary">Rezervovat prohlídku &#8594;</a>
+                    <a href="https://www.egoe-ulita.eu/plocha" target="_blank" class="btn btn-secondary">Více o Ulita Plochá</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-image-wrapper">
+                    <img src="img/poledesignu-4.jpg" alt="EGOE Ulita Plochá 2.0 — exteriér">
+                    <div class="hero-image-tag">Ulita Plochá 2.0 &mdash; 3. generace</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALLERY STRIP -->
+    <div class="gallery-strip fade-in">
+        <div class="gallery-grid">
+            <img src="img/poledesignu-1.jpg" alt="Ulita interiér" onclick="openLightbox(this)">
+            <img src="img/poledesignu-2.jpg" alt="Ulita interiér detail" onclick="openLightbox(this)">
+            <img src="img/poledesignu-3.jpg" alt="Ulita kuchyně" onclick="openLightbox(this)">
+            <img src="img/poledesignu-5.jpg" alt="Ulita exteriér" onclick="openLightbox(this)">
+        </div>
+    </div>
+
+    <!-- ULITA – EFEKTIVNÍ ŘEŠENÍ -->
+    <section class="section" id="proc">
+        <div class="section-inner fade-in">
+            <span class="section-label">ULITA &mdash; efektivní řešení</span>
+            <h2 class="section-title">Plnohodnotné bydlení<br>na minimalistickém půdorysu</h2>
+            <p class="section-desc">
+                Na 28,5 metrech čtverečních vzniká prostor pro čtyři až pět lidí.
+                K dispozici veškeré zařizovací předměty a technologie.
+            </p>
+
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="why-card-icon">&#128736;</div>
+                    <h3>KONSTRUKCE &mdash; nejvyšší standardy</h3>
+                    <p>Kvalitní materiály, promyšlená konstrukce a smysl pro detail. Konstrukční řešení sledující maximální využití prostoru. Precizní interiérové zpracování postavené na integraci.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-card-icon">&#128273;</div>
+                    <h3>VÝBAVA &mdash; vždy na klíč</h3>
+                    <p>Žádné stěhování, Ulita má vše důležité jako součást konstrukce. Stačí vstoupit. Dodávána jako kompletní objekt včetně integrovaného nábytku. Kuchyňská linka včetně spotřebičů, vybavená koupelna. Připravenost pro okamžité využití.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-card-icon">&#128200;</div>
+                    <h3>REALIZACE &mdash; čas jsou peníze</h3>
+                    <p>Rychlá cesta od rozhodnutí k provozu. Bez staveniště. Vše vzniká ve výrobním závodě v Bílovicích. Na místě samotném se připravují jen sítě a osazovací body. Po osazení je připravena k provozu během několika dnů.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-card-icon">&#127961;</div>
+                    <h3>MOBILITA &mdash; pro více situací</h3>
+                    <p>Nejde o stavbu, neblokuje pozemek. Lze přesunovat podle potřeby. Instalace na zemní vruty nebo základové patky bez spodní stavby. Konstrukce připravená na opakovanou montáž a demontáž.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-card-icon">&#127956;</div>
+                    <h3>VÝVOJ &mdash; vlastní pohled</h3>
+                    <p>Pětileté hledání vlastní cesty, aktuálně třetí generace produktu. Produkt vznikl jako řešení vlastní situace. Více než 5 000 hodin vývoje a testování.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-card-icon">&#128100;</div>
+                    <h3>PODPORA &mdash; dlouhodobý servis</h3>
+                    <p>Servisní podpora s možností dalšího rozšiřování funkčního využití. Produkt je navržen pro dlouhodobý provoz. Servisní zázemí výrobce, dostupnost náhradních dílů. Technická podpora provozovatelům.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SPECS -->
+    <section class="section specs-bg" id="parametry">
+        <div class="section-inner fade-in">
+            <span class="section-label">Technické parametry</span>
+            <h2 class="section-title">Ulita Plochá 2.0</h2>
+            <p class="section-desc">
+                CLT/SWP panely, PIR izolace, fasáda z termizované borovice.
+                Izolační trojskla, energetický štítek B, celoročně obyvatelná.
+            </p>
+
+            <div class="specs-grid">
+                <div class="spec-item">
+                    <div class="spec-value">27,5 <span class="spec-unit">m²</span></div>
+                    <div class="spec-label">Užitná plocha (3+kk)</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-value">37,3 <span class="spec-unit">m²</span></div>
+                    <div class="spec-label">Vč. střešní terasy</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-value">4 <span class="spec-unit">osoby</span></div>
+                    <div class="spec-label">Trvalé bydlení (až 6 přespání)</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-value">12,5 <span class="spec-unit">m³</span></div>
+                    <div class="spec-label">Integrované úložné prostory</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-value">90 <span class="spec-unit">dní</span></div>
+                    <div class="spec-label">Výroba od složení zálohy</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-value">B</div>
+                    <div class="spec-label">Energetický štítek</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-value">Na klíč</div>
+                    <div class="spec-label">Kompletní vybavení v ceně</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-value">CLT</div>
+                    <div class="spec-label">Dřevěná panelová konstrukce</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EKOSYSTÉM – funkční doplňky -->
+    <section class="section leva-bg" id="leva">
+        <div class="section-inner fade-in">
+            <div class="leva-layout">
+                <div>
+                    <span class="section-label">EKOSYSTÉM &mdash; funkční doplňky</span>
+                    <h2 class="section-title">Terasy, pergoly a nábytek<br>pro vytvoření jakéhokoliv zázemí</h2>
+                    <p class="section-desc" style="margin-bottom: 0;">
+                        Ulita může být součástí širšího architektonického konceptu.
+                        Systém EGOE Leva a kompletní outdoor nábytek EGOE Life
+                        rozšíří vaši Ulitu o plně funkční venkovní zázemí.
+                    </p>
+
+                    <ul class="leva-features">
+                        <li>Pergoly &mdash; modulární systém Leva</li>
+                        <li>Kompletní outdoor nábytek</li>
+                        <li>Terasy a pochozí plochy</li>
+                        <li>Herní a funkční prvky pro děti</li>
+                        <li>Venkovní kuchyně a grily</li>
+                        <li>Součást širšího architektonického konceptu</li>
+                    </ul>
+                </div>
+                <div class="leva-images">
+                    <img src="img/prislusenstvi-hero.jpg" alt="EGOE Leva pergola systém">
+                    <img src="img/leva-outdoor.jpg" alt="EGOE outdoor nábytek">
+                    <img src="img/leva-pergola.jpg" alt="EGOE Leva modulární systém">
+                    <img src="img/leva-grill.jpg" alt="EGOE venkovní kuchyně">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EGOE – komplexní partner -->
+    <section class="section" id="vyhody">
+        <div class="section-inner fade-in">
+            <span class="section-label">EGOE &mdash; komplexní partner</span>
+            <h2 class="section-title">Od návrhu po realizaci<br>až po servisní podporu</h2>
+            <p class="section-desc">
+                Egoé je dodavatelem komplexního řešení &mdash; návrh konceptu a umístění objektů,
+                koordinace instalace, podpora provozu, modernizace, změny využití.
+            </p>
+
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-num">01</div>
+                    <div class="benefit-text">
+                        <h4>Návrh konceptu a umístění objektů</h4>
+                        <p>Komplexní řešení od prvního návrhu přes koordinaci instalace až po uvedení do provozu.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-num">02</div>
+                    <div class="benefit-text">
+                        <h4>Podpora provozu</h4>
+                        <p>Produkt je navržen pro dlouhodobý provoz. Servisní zázemí výrobce, dostupnost náhradních dílů, technická podpora provozovatelům.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-num">03</div>
+                    <div class="benefit-text">
+                        <h4>Modernizace a změny využití</h4>
+                        <p>Servisní podpora s možností dalšího rozšiřování funkčního využití.</p>
+                    </div>
+                </div>
+                <div class="benefit-item">
+                    <div class="benefit-num">04</div>
+                    <div class="benefit-text">
+                        <h4>SYNERGIE &mdash; marketingová kooperace</h4>
+                        <p>Produkt s marketingovým potenciálem díky práci s prostorem. Spolupráce na prezentaci projektů, sdílení referencí. Křížová komunikace realizací.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALLERY FULL -->
+    <div class="gallery-strip fade-in">
+        <div class="gallery-grid">
+            <img src="img/hero-exterior.jpg" alt="Ulita exteriér" onclick="openLightbox(this)">
+            <img src="img/interior-1.jpg" alt="Ulita interiér" onclick="openLightbox(this)">
+            <img src="img/interior-2.jpg" alt="Ulita kuchyně" onclick="openLightbox(this)">
+            <img src="img/poledesignu-6.jpg" alt="Ulita detail" onclick="openLightbox(this)">
+            <img src="img/interior-3.jpg" alt="Ulita ložnice" onclick="openLightbox(this)">
+            <img src="img/interior-4.jpg" alt="Ulita koupelna" onclick="openLightbox(this)">
+            <img src="img/lifestyle.jpg" alt="Ulita lifestyle" onclick="openLightbox(this)">
+            <img src="img/rodina.jpg" alt="Ulita rodina" onclick="openLightbox(this)">
+        </div>
+    </div>
+
+    <!-- RESERVATION -->
+    <section class="section reservation-bg" id="rezervace">
+        <div class="section-inner fade-in">
+            <span class="section-label">Rezervace</span>
+            <h2 class="section-title">Rezervujte si prohlídku</h2>
+            <p class="section-desc">
+                Vyberte si časový slot. Každá prohlídka trvá 90 minut
+                a zahrnuje osobní představení produktu Petrem Hübnerem, Sales Managerem projektu Ulita.
+            </p>
+
+            <div class="reservation-layout">
+                <div>
+                    <div class="date-header">
+                        <h3>Středa 22. dubna 2026</h3>
+                        <p>B2B Den otevřených dveří &mdash; 9:00 – 18:00</p>
+                    </div>
+
+                    <div class="slots-grid" id="slotsGrid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <div>
+                    <!-- Form -->
+                    <div class="form-card" id="formCard">
+                        <h3>Kontaktní údaje</h3>
+                        <p class="form-sub">Vyplňte prosím údaje pro potvrzení rezervace.</p>
+
+                        <div class="form-selected-slot" id="selectedSlotInfo">
+                            &#128197; Vybraný slot: <strong id="selectedSlotText"></strong>
+                        </div>
+
+                        <form id="reservationForm" onsubmit="handleSubmit(event)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Jméno *</label>
+                                    <input type="text" class="form-input" name="firstName" placeholder="Jan" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Příjmení *</label>
+                                    <input type="text" class="form-input" name="lastName" placeholder="Novák" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Společnost *</label>
+                                <input type="text" class="form-input" name="company" placeholder="Název společnosti" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Pozice</label>
+                                <input type="text" class="form-input" name="position" placeholder="Např. jednatel, obchodní ředitel">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">E-mail *</label>
+                                    <input type="email" class="form-input" name="email" placeholder="jan@firma.cz" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Telefon *</label>
+                                    <input type="tel" class="form-input" name="phone" placeholder="+420 777 888 999" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Počet osob</label>
+                                <select class="form-input" name="persons">
+                                    <option value="1">1 osoba</option>
+                                    <option value="2" selected>2 osoby</option>
+                                    <option value="3">3 osoby</option>
+                                    <option value="4">4 osoby</option>
+                                    <option value="5">5 osob</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Poznámka</label>
+                                <textarea class="form-input" name="note" placeholder="Specifické dotazy, oblast zájmu..."></textarea>
+                            </div>
+
+                            <input type="hidden" name="selectedDate" value="2026-04-22">
+                            <input type="hidden" name="selectedSlot" id="inputSlot">
+
+                            <button type="submit" class="btn-submit" id="submitBtn" disabled>
+                                Vyberte nejprve časový slot
+                            </button>
+                            <p class="form-note">Potvrzení rezervace obdržíte e-mailem do 24 hodin.</p>
+                        </form>
+                    </div>
+
+                    <!-- Success -->
+                    <div class="success-message" id="successMessage">
+                        <div class="success-icon">&#10003;</div>
+                        <h3>Rezervace odeslána!</h3>
+                        <p>Děkujeme za váš zájem. Potvrzení obdržíte e-mailem do 24 hodin.<br>
+                        Těšíme se na setkání 22. dubna v Praze.</p>
+                        <br>
+                        <p style="font-size: 0.85rem; color: var(--gray-500);">
+                            Petr Hübner &mdash; <a href="mailto:p.hubner@egoe.eu">p.hubner@egoe.eu</a> &mdash; +420 771 281 317
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section" id="kontakt" style="background: var(--gray-100);">
+        <div class="section-inner fade-in">
+            <span class="section-label">Kontakt</span>
+            <h2 class="section-title">Máte otázky?</h2>
+            <p class="section-desc">Kontaktujte přímo Petra Hübnera, Sales Managera projektu Ulita.</p>
+
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-card-icon">&#128100;</div>
+                    <h4>Petr Hübner</h4>
+                    <p>Sales Manager<br>projektu Ulita</p>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-card-icon">&#9993;</div>
+                    <h4>E-mail</h4>
+                    <p><a href="mailto:p.hubner@egoe.eu">p.hubner@egoe.eu</a></p>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-card-icon">&#128222;</div>
+                    <h4>Telefon</h4>
+                    <p><a href="tel:+420771281317">+420 771 281 317</a></p>
+                </div>
+            </div>
+
+            <div class="map-wrapper">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2563.5!2d14.4494!3d50.0175!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470b93ff00000001%3A0x1!2sK+luk%C3%A1m+19%2C+Praha+4+-+Libu%C5%A1!5e0!3m2!1sen!2scz!4v1"
+                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                    title="Mapa - K lukám 19, Praha 4 Libuš">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <img src="img/logo-white.svg" alt="EGOE Ulita" class="footer-logo-img">
+            <ul class="footer-links">
+                <li><a href="https://www.egoe-ulita.eu" target="_blank">egoe-ulita.eu</a></li>
+                <li><a href="https://www.egoe.eu" target="_blank">egoe.eu</a></li>
+                <li><a href="https://www.airbnb.cz/rooms/1479943301963496336" target="_blank">Vyzkoušet na Airbnb</a></li>
+                <li><a href="mailto:p.hubner@egoe.eu">p.hubner@egoe.eu</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+        <img id="lightboxImg" src="" alt="">
+    </div>
+
+    <script>
+        // ─── SLOT DATA ───
+        const slots = [
+            { time: '9:00 – 10:30', status: 'free' },
+            { time: '10:30 – 12:00', status: 'free' },
+            { time: '12:00 – 13:30', status: 'free' },
+            { time: '13:30 – 15:00', status: 'free' },
+            { time: '15:00 – 16:30', status: 'free' },
+            { time: '16:30 – 18:00', status: 'free' },
+        ];
+
+        let selectedSlot = null;
+
+        function renderSlots() {
+            const grid = document.getElementById('slotsGrid');
+            grid.innerHTML = '';
+            slots.forEach((slot, i) => {
+                const div = document.createElement('div');
+                div.className = 'slot' + (slot.status === 'taken' ? ' slot-taken' : '') + (selectedSlot === i ? ' selected' : '');
+                div.innerHTML = `
+                    <div class="slot-time">${slot.time}</div>
+                    <div class="slot-status">${slot.status === 'taken' ? 'Obsazeno' : ''}</div>
+                `;
+                if (slot.status !== 'taken') {
+                    div.onclick = () => selectSlot(i, slot.time);
+                }
+                grid.appendChild(div);
+            });
+        }
+
+        function selectSlot(index, time) {
+            selectedSlot = index;
+            renderSlots();
+            document.getElementById('selectedSlotText').textContent = `Stř 22. dubna, ${time}`;
+            document.getElementById('selectedSlotInfo').classList.add('visible');
+            document.getElementById('inputSlot').value = time;
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = false;
+            btn.textContent = 'Odeslat rezervaci';
+        }
+
+        function handleSubmit(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            console.log('Reservation submitted:', data);
+            document.getElementById('formCard').style.display = 'none';
+            document.getElementById('successMessage').classList.add('visible');
+        }
+
+        // ─── LIGHTBOX ───
+        function openLightbox(img) {
+            document.getElementById('lightboxImg').src = img.src;
+            document.getElementById('lightbox').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+        // ─── NAV ───
+        window.addEventListener('scroll', () => {
+            document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+        });
+        document.getElementById('navToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+
+        // ─── FADE IN ───
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // ─── INIT ───
+        renderSlots();
+    </script>
+</body>
+</html>
