@@ -722,13 +722,33 @@
             btn.textContent = 'Odeslat rezervaci';
         }
 
+        // ─── GOOGLE SHEETS URL ───
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzD6vKsLWgiLajv11OyMClx_uwXpZsI0KIO6hjo4MbAZL-Ci_guzwqEmhNYZDXuCMI_/exec';
+
         function handleSubmit(e) {
             e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Odesílám...';
+
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData);
-            console.log('Reservation submitted:', data);
-            document.getElementById('formCard').style.display = 'none';
-            document.getElementById('successMessage').classList.add('visible');
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(() => {
+                document.getElementById('formCard').style.display = 'none';
+                document.getElementById('successMessage').classList.add('visible');
+            })
+            .catch(() => {
+                btn.disabled = false;
+                btn.textContent = 'Odeslat rezervaci';
+                alert('Chyba při odesílání. Zkuste to prosím znovu.');
+            });
         }
 
         // ─── LIGHTBOX ───
